@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--                                   android:layout_width="match_parent"-->
+<!--                                   android:layout_height="wrap_content"-->
+<!--                                   android:layout_margin="4dp">-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="todoItem"
+            type="com.example.retrofitdemo.model.Todo" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:paddingLeft="20dp"
+    >
+        <TextView
+            android:id="@+id/text_view_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{todoItem.description}"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+        />
+
+        <TextView
+            android:id="@+id/text_view_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{todoItem.deadline}"
+            android:layout_below="@+id/text_view_1"
+        />
+    </RelativeLayout>
+    
+</layout>

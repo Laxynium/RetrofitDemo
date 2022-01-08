@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import com.example.retrofitdemo.RetroInstance
+import com.example.retrofitdemo.service.TodosService
 
 //TODO add api calls
 class HomeViewModel : ViewModel() {
+
+    private val todosService: TodosService = RetroInstance.getRetroInstance().create(TodosService::class.java)
 
     private val _todos = MutableLiveData<MutableList<Todo>>().apply {
         value = arrayListOf(
@@ -35,4 +39,22 @@ class HomeViewModel : ViewModel() {
             this?.removeAll { it.id == todo.id }
         }
     }
+
+//    fun makeAPICall() {
+//        val call = todosService.getAll(10,0)
+//        call.enqueue(object : Callback<List<Todo>> {
+//            override fun onFailure(call: Call<List<Todo>>, t: Throwable) {
+//                 recyclerListData.postValue(null)
+//            }
+//
+//            override fun onResponse(call: Call<List<Todo>>, response: Response<List<Todo>>) {
+//                if(response.isSuccessful){
+//                    // TODO GG
+//                    recyclerListData.postValue(TodoList(ArrayList(response.body())))
+//                } else {
+//                    recyclerListData.postValue(null)
+//                }
+//            }
+//        })
+//    }
 }
