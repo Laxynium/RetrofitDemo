@@ -87,15 +87,14 @@ class DashboardFragment : Fragment(), UploadRequestBody.UploadCallback {
     private fun sendFile(mediaFile: MediaFile) {
         val file = File(mediaFile.path)
         val upload = UploadRequestBody(file, "*", this)
-//        val r = RequestBody.create(MediaType.parse("*/*"), file)
-        val filePart = MultipartBody.Part.create(upload)
+        val filePart = MultipartBody.Part.createFormData("file", file.name, upload)
         val call = this.todosService.uploadImage(filePart)
         call.enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.isSuccessful) {
-                    Toast.makeText(context, "Successfully sent file. ${response.body().string()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Successfully sent file. ${response.body()?.string()}", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(context, "Failed to send file. Error: ${response.errorBody().string()}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Failed to send file. Error: ${response.errorBody()?.string()}", Toast.LENGTH_LONG).show()
                 }
             }
 
