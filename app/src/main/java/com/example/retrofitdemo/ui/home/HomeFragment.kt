@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitdemo.R
@@ -18,6 +17,7 @@ import com.example.retrofitdemo.databinding.FragmentHomeBinding
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var homeViewModelFactory: HomeViewModelFactory
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
@@ -29,17 +29,12 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        homeViewModelFactory = HomeViewModelFactory()
         homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this, homeViewModelFactory).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        val todos = ArrayList<Todo>()
-
-        todos.add(Todo(1, "TODO", false))
-        todos.add(Todo(2, "TODO", false))
-        todos.add(Todo(3, "TODO", false))
 
         binding.addBtn.setOnClickListener {
             homeViewModel.addTodo(Todo(-1, "TODO", false))
@@ -58,6 +53,8 @@ class HomeFragment : Fragment() {
         homeViewModel.todos.observe(viewLifecycleOwner) {
             todoAdapter.updateTodos(it)
         }
+
+        homeViewModel.loadTodos()
 
         return root
     }
@@ -94,13 +91,10 @@ class HomeFragment : Fragment() {
             val text = view.findViewById<TextView>(R.id.text)
             val completed = view.findViewById<CheckBox>(R.id.completed)
             val delBtn = view.findViewById<Button>(R.id.deleteBtn)
+            val updateBtn = view.findViewById<Button>(R.id.updateBtn)
 
             text.text = todo.text
             completed.isChecked = todo.completed
-
-            text.addTextChangedListener({ _, _, _, _ -> }, { s, _, _, _ ->
-                onTextChanged(todo, s.toString())
-            }, { })
 
             text.setOnFocusChangeListener { _, isFocused ->
                 if (isFocused) {
@@ -120,6 +114,10 @@ class HomeFragment : Fragment() {
 
             delBtn.setOnClickListener {
                 onDeleted(todo)
+            }
+
+            updateBtn.setOnClickListener {
+                onTextChanged(todo, text.text.toString())
             }
 
             return view
