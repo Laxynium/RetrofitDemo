@@ -1,5 +1,7 @@
 package com.example.retrofitdemo.service
 
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import com.example.retrofitdemo.ui.home.Todo
 import retrofit2.Call
 import retrofit2.Response
@@ -9,6 +11,11 @@ data class CreateTodo(val text: String, val completed: Boolean)
 data class UpdateTodo(val text: String, val completed: Boolean)
 
 interface TodosService {
+
+    @Multipart
+    @POST("/api/Files")
+    @Headers("Host: retrofitdemo.azurewebsites.net", "Accept: */*")
+    fun uploadImage(@Part file: MultipartBody.Part): Call<ResponseBody>
 
     @GET("api/todos")
     fun getAll(@Query("limit") limit: Int, @Query("offset") offset: Int): Call<List<Todo>>
