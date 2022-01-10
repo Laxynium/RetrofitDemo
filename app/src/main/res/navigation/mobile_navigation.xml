@@ -14,10 +14,10 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.retrofitdemo.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:name="com.example.retrofitdemo.ui.dashboard.FileUploadFragment"
+        android:label="@string/title_upload_file"
         android:exported="true"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_fileupload" />
 
     <fragment
         android:id="@+id/navigation_notifications"
