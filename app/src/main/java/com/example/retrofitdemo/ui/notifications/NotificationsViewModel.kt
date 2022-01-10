@@ -8,13 +8,11 @@ import retrofit2.Response
 
 class NotificationsViewModel(private val exerciseService: ExerciseService) : ViewModel() {
     fun generateCode(name: String): Observable<Response<Code>> {
-        //TODO exercise : add appropriate method to exercise service and invoke it here
-        return Observable.empty()
+        return exerciseService.generateCode(name);
     }
 
     fun validate(code: Code): Observable<Response<ValidationSuccessResponse>> {
-        //TODO exercise : add appropriate method to exercise service and invoke it here
-        return Observable.empty()
+        return exerciseService.validate(code.name, code.code);
     }
 }
 
