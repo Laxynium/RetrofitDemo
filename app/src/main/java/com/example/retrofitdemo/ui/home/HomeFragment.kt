@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitdemo.R
@@ -42,9 +39,9 @@ class HomeFragment : Fragment() {
 
         val todoAdapter =
             TodoAdapter(requireContext(), emptyList(), { todo, value ->
-                homeViewModel.updateTodo(todo.copy(completed = value))
+                homeViewModel.updateTodoObs(todo.copy(completed = value))
             }, { todo, value ->
-                homeViewModel.updateTodo(todo.copy(text = value))
+                homeViewModel.updateTodoObs(todo.copy(text = value))
             }, { todo ->
                 homeViewModel.removeTodo(todo)
             })
@@ -54,7 +51,16 @@ class HomeFragment : Fragment() {
             todoAdapter.updateTodos(it)
         }
 
-        homeViewModel.loadTodos()
+        homeViewModel.error.observe(viewLifecycleOwner) {
+            it.let {
+                if(!it.isNullOrEmpty())
+                {
+                    Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        homeViewModel.loadTodosObs()
 
         return root
     }

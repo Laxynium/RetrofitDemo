@@ -3,6 +3,7 @@ package com.example.retrofitdemo.service
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import com.example.retrofitdemo.ui.home.Todo
+import io.reactivex.rxjava3.core.Observable
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -32,4 +33,9 @@ interface TodosService {
     @PUT("api/todos/{id}")
     fun updateById(@Path("id") id: Int, @Body todo: UpdateTodo): Call<Todo>
 
+    @GET("api/todos")
+    fun getAllObs(@Query("limit") limit: Int, @Query("offset") offset: Int): Observable<List<Todo>>
+
+    @PUT("api/todos/{id}")
+    fun updateByIdObs(@Path("id") id: Int, @Body todo: UpdateTodo): Observable<Response<Todo>>
 }
