@@ -6,12 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.retrofitdemo.R
 import com.example.retrofitdemo.RetroInstance
-import com.example.retrofitdemo.databinding.FragmentDashboardBinding
 import com.example.retrofitdemo.model.UploadRequestBody
 import com.example.retrofitdemo.service.TodosService
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
@@ -24,13 +25,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
-class DashboardFragment : Fragment(), UploadRequestBody.UploadCallback {
-
-    private var _binding: FragmentDashboardBinding? = null
-
-    private val binding get() = _binding!!
+class FileUploadFragment : Fragment(), UploadRequestBody.UploadCallback {
 
     private var progressBar: ProgressBar? = null
+    private var uploadBtn: Button? = null
+    private var fileNameTxt: TextView? = null
+
+    private var selectedFile: MediaFile? = null
 
     private val todosService: TodosService = RetroInstance.getRetroInstance().create(TodosService::class.java)
 
@@ -39,17 +40,27 @@ class DashboardFragment : Fragment(), UploadRequestBody.UploadCallback {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
-//        val uploadBtn  = view.findViewById<Button>(R.id.upload_file_btn)
-//        uploadBtn.setOnClickListener {
-//            imagePicker()
-//        }
-        imagePicker()
+        val view = inflater.inflate(R.layout.fragment_fileupload, container, false)
+        progressBar = view.findViewById(R.id.progress_bar)
+        fileNameTxt = view.findViewById(R.id.selected_file_name)
+        val selectFileBtn  = view.findViewById<Button>(R.id.select_file_btn)
+        uploadBtn  = view.findViewById(R.id.upload_file_btn)
 
-        return root
+
+        selectFileBtn.setOnClickListener {
+            imagePicker()
+        }
+        uploadBtn!!.setOnClickListener {
+            this.sendFile()
+        }
+
+        return view
+    }
+
+    private fun setFileToUpload(file: MediaFile) {
+        this.selectedFile = file
+        this.uploadBtn!!.isEnabled = true
+        this.fileNameTxt!!.text = file.name
     }
 
     private fun imagePicker() {
@@ -68,24 +79,21 @@ class DashboardFragment : Fragment(), UploadRequestBody.UploadCallback {
         startActivityForResult(intent, 101)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == RESULT_OK && data != null) {
             val mediaFiles: ArrayList<MediaFile>? = data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES)
-            val mediaFile = mediaFiles!![0]
-            sendFile(mediaFile)
+            if (!mediaFiles.isNullOrEmpty()) {
+                val mediaFile = mediaFiles!![0]
+                setFileToUpload(mediaFile)
+            }
         } else {
             Toast.makeText(context, "something went wrong when choosing file", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun sendFile(mediaFile: MediaFile) {
-        val file = File(mediaFile.path)
+    private fun sendFile() {
+        val file = File(this.selectedFile!!.path)
         val upload = UploadRequestBody(file, "*", this)
         val filePart = MultipartBody.Part.createFormData("file", file.name, upload)
         val call = this.todosService.uploadImage(filePart)
@@ -107,6 +115,6 @@ class DashboardFragment : Fragment(), UploadRequestBody.UploadCallback {
     }
 
     override fun onProgressUpdate(percentage: Int) {
-        this.progressBar?.progress = percentage
+        this.progressBar?.setProgress(percentage, true)
     }
 }
