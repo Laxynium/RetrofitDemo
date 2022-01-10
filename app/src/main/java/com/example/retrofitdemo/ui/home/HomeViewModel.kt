@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import arrow.core.Either
+import com.example.retrofitdemo.ApiError
 import com.example.retrofitdemo.service.CreateTodo
 import com.example.retrofitdemo.service.TodosService
 import com.example.retrofitdemo.service.UpdateTodo
@@ -14,12 +16,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class HomeViewModel(private val todosService: TodosService) : ViewModel() {
-    private val _todos = MutableLiveData<List<Todo>>().apply {
+    private val _todos =  MutableLiveData<List<Todo>>().apply {
         value = emptyList()
     }
     private val _error = MutableLiveData<String?>();
     val todos: LiveData<List<Todo>> = _todos.map { it.toList() }
     val error: LiveData<String?> = _error
+
+    val todos2: LiveData<Either<ApiError, List<Todo>>> = this.todosService.getAllCustom(3,0)
 
     fun loadTodos() {
         val call = todosService.getAll(10, 0)

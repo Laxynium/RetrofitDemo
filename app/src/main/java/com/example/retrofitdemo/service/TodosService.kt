@@ -1,5 +1,8 @@
 package com.example.retrofitdemo.service
 
+import androidx.lifecycle.LiveData
+import arrow.core.Either
+import com.example.retrofitdemo.ApiError
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import com.example.retrofitdemo.ui.home.Todo
@@ -38,4 +41,7 @@ interface TodosService {
 
     @PUT("api/todos/{id}")
     fun updateByIdObs(@Path("id") id: Int, @Body todo: UpdateTodo): Observable<Response<Todo>>
+
+    @GET("api/todos")
+    fun getAllCustom(@Query("limit") limit: Int, @Query("offset") offset: Int): LiveData<Either<ApiError,List<Todo>>>
 }

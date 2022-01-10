@@ -13,7 +13,7 @@ class RetroInstance {
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(ExampleInterceptor())
-                .addNetworkInterceptor(ExampleInterceptor())
+//                .addNetworkInterceptor(ExampleInterceptor())
                 .build()
 
             return Retrofit.Builder()
@@ -21,6 +21,7 @@ class RetroInstance {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .addCallAdapterFactory(CustomAdapterFactory())
                 .build()
         }
     }

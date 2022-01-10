@@ -2,12 +2,14 @@ package com.example.retrofitdemo.ui.home
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import arrow.core.Either
 import com.example.retrofitdemo.R
 import com.example.retrofitdemo.databinding.FragmentHomeBinding
 
@@ -61,6 +63,17 @@ class HomeFragment : Fragment() {
         }
 
         homeViewModel.loadTodosObs()
+
+        homeViewModel.todos2.observe(viewLifecycleOwner, {
+            when(it){
+                is Either.Left -> {
+                    Log.d("Custom call adapter", it.a.toString())
+                }
+                is Either.Right -> {
+                    Log.d("Custom call adapter", it.b.toString())
+                }
+            }
+        })
 
         return root
     }
