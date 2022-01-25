@@ -18,7 +18,7 @@ interface TodosService {
 
     @Multipart
     @POST("/api/Files")
-    @Headers("Host: retrofitdemo.azurewebsites.net", "Accept: */*")
+    @Headers("Host: retrofitdemoapi.azurewebsites.net", "Accept: */*")
     fun uploadImage(@Part file: MultipartBody.Part): Call<ResponseBody>
 
     @GET("api/todos")
